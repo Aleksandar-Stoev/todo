@@ -1,0 +1,33 @@
+name: Deploy to Azure Web App
+
+on:
+  push:
+    branches:
+      - main  # Изпълнява се автоматично при всеки push в main клона
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24-lts' # Вашата Node версия
+
+    - name: Install dependencies and build
+      run: |
+        npm install
+        # добавете npm run build, ако проектът го изисква
+
+    - name: Log in to Azure via Service Principal
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }} # Вашият безплатен таен ключ
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: 'todoappsasho' # Името на вашето приложение
